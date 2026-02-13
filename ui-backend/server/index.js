@@ -10,22 +10,27 @@ app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL:"https:/api.groq.com/openai/v1",
 });
 
 app.post("/generate", async (req, res) => {
   try {
     const { prompt } = req.body;
 
-    const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
-      input: `You are a UI generator.
-Only return JSX.
-User request: ${prompt}`
-    });
+    const response = await openai.chat.completions.create({
+  model: "llama-3.1-8b-instant",
+  messages: [
+    {
+      role: "user",
+      content: `You are a UI generator. Only return JSX.
+      User request: ${prompt}`
+    }
+  ],
+});
 
     const text =
-      response.output?.[0]?.content?.[0]?.text || "No output";
+      response.choices[0].message.content;
 
     res.json({ code: text });
 
