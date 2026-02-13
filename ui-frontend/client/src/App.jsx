@@ -13,7 +13,7 @@ function App() {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:5000/generate",
+        "https://ui-project-5rcl.onrender.com",
         { prompt }
       );
 
